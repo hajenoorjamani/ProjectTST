@@ -1,7 +1,7 @@
 from database.db import get_db
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from models.userModels import UserSchema, ShowUser, Token
+from models.userModels import UserSchema, ShowUser, Token, AnswerSchema
 from sqlalchemy.orm import Session
 from typing import List
 from auth.authenticate import authenticate
@@ -33,3 +33,7 @@ def get_user_list(db: Session = Depends(get_db), user: str = Depends(authenticat
 @user_router.get("/{id}", response_model=ShowUser)
 def get_a_user(id: int, db: Session = Depends(get_db), user: str = Depends(authenticate)) -> dict:
     return userControllers.get_user(id, db)
+
+@user_router.put("/get-movie-recommendation")
+def find_movie_recommendation_for_me(request: AnswerSchema, db: Session = Depends(get_db), user: str = Depends(authenticate)) -> dict:
+    return userControllers.findMovieRecommendation(request, db, user)
